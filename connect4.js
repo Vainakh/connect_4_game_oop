@@ -5,17 +5,25 @@
  * board fills (tie)
  */
 
+ class Player {
+   constructor(color, name) {
+     this.color = color;
+     this.name = name;
+   }
+  }
+
 class Game {
   constructor(height=7, width=6) {
     this.height = height;
     this.width = width; 
-    this.currPlayer = 1;
     this.board = [];
     this.gameRunning = false;
     this.gameOver = false;
     this.makeBoard();
     this.makeHtmlBoard();
-
+    this.p1;
+    this.p2;
+    this.currPlayer = this.p1;
     let button = document.getElementById("start");
     button.addEventListener('click', this.startGame);
   }
@@ -82,7 +90,9 @@ class Game {
   placeInTable(y, x) {
     let piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.style["background-color"] = this.currPlayer.color;
+    console.log("Current player:" + this.currPlayer.name);
+    console.log("Current player color:" + this.currPlayer.color);
     piece.style.top = -50 * (y + 2);
 
     let spot = document.getElementById(`${y}-${x}`);
@@ -121,7 +131,7 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`${this.currPlayer.name} won!`);
     }
     
     // check for tie
@@ -130,7 +140,7 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -174,12 +184,18 @@ class Game {
   }
 
 startGame = () => {
-  
+
    if (this.gameRunning) {
       location.reload();
    } else {
       this.gameRunning = true;
-   } 
+      let p1Color = document.getElementById("p1color").value;
+      let p2Color = document.getElementById("p2color").value; 
+      this.p1 = new Player(p1Color, "Adlan");
+      this.p2 = new Player(p2Color, "Graham");
+      this.currPlayer = this.p1;
+
+    } 
  }
  
 }
